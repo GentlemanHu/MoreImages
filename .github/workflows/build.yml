@@ -52,7 +52,7 @@ jobs:
         uses: oracle-actions/setup-java@v1
         with:
           website: jdk.java.net
-          release: 17 # Replace N with GA, EA, 17, 18, 19, ...
+          release: 19 # Replace N with GA, EA, 17, 18, 19, ...
 #      - name: Download ${{ matrix.os }} OpenJDK ${{ matrix.jdk }}
 #        id: download-jdk
 #        uses: sormuras/download-jdk@v1
