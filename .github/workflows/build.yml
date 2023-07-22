@@ -50,7 +50,7 @@ jobs:
 
       - name: Download ${{ matrix.os }} OpenJDK ${{ matrix.jdk }}
         id: download-jdk
-        uses: sormuras/download-jdk@v1
+        uses: sormuras/download-jdk@releases/17
         with:
           feature: ${{ matrix.jdk }}
 
