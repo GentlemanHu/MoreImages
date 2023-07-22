@@ -48,20 +48,25 @@ jobs:
       - name: Check out the source code
         uses: actions/checkout@v3
 
-      - name: Download ${{ matrix.os }} OpenJDK ${{ matrix.jdk }}
-        id: download-jdk
-        uses: sormuras/download-jdk@releases/17
+      - name: 'Set up latest JDK N from jdk.java.net'
+        uses: oracle-actions/setup-java@v1
         with:
-          feature: ${{ matrix.jdk }}
-
-      - name: Set up OpenJDK ${{ matrix.jdk }}
-        id: setup-java
-        uses: actions/setup-java@v3
-        if: always() && steps.download-jdk.outcome == 'success'
-        with:
-          distribution: jdkfile
-          java-version: ${{ env.JDK_VERSION }}
-          jdkFile: ${{ env.JDK_FILE }}
+          website: jdk.java.net
+          release: 17 # Replace N with GA, EA, 17, 18, 19, ...
+#      - name: Download ${{ matrix.os }} OpenJDK ${{ matrix.jdk }}
+#        id: download-jdk
+#        uses: sormuras/download-jdk@v1
+#        with:
+#          feature: ${{ matrix.jdk }}
+#
+#      - name: Set up OpenJDK ${{ matrix.jdk }}
+#        id: setup-java
+#        uses: actions/setup-java@v3
+#        if: always() && steps.download-jdk.outcome == 'success'
+#        with:
+#          distribution: jdkfile
+#          java-version: ${{ env.JDK_VERSION }}
+#          jdkFile: ${{ env.JDK_FILE }}
 
       - name: Cache Gradle dependencies
         uses: actions/cache@v3.0.8
