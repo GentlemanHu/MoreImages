@@ -18,7 +18,11 @@ import androidx.compose.ui.graphics.Shader
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.times
 import com.russhwolf.settings.get
+import com.sumygg.anarts.arts.Arts
+import com.sumygg.anarts.ui.ArtsView
+import com.sumygg.anarts.viewmodel.ArtsModel
 import com.tinify.*
 import kotlinx.coroutines.*
 import java.awt.FileDialog
@@ -102,6 +106,8 @@ fun App() {
 
     val dialogs = remember { mutableMapOf<String, Boolean>() }
 
+    var buttonVisible by remember { mutableStateOf(true) }
+
     val hintDialogs = remember { mutableMapOf<HintDialogBean, Boolean>() }
 
     var canShowSettingDialog by remember { mutableStateOf(false) }
@@ -109,12 +115,14 @@ fun App() {
 
     var title by remember { mutableStateOf("图片压缩处理工具") }
 
-    val indicatorSize = 144.dp
+    val indicatorSize = 200.dp
     val trackWidth: Dp = (indicatorSize * .1f)
     val commonModifier = Modifier.size(indicatorSize)
 
     var compressProgress by remember { mutableStateOf(0f) }
 
+//    val artsModel by remember { mutableStateOf(ArtsModel(Arts.MAZE)) }
+//
 
     eHandlder = object : HandleError {
         override fun handleAccountError() {
@@ -139,6 +147,7 @@ fun App() {
 
         override fun defaultOperation() {
             buttonEnable = true
+            buttonVisible = true
         }
 
     }
@@ -154,8 +163,8 @@ fun App() {
         targetValue = 1000f, // Target value of startX
         animationSpec = infiniteRepeatable( // Repeat the animation infinitely
             animation = tween( // Use a tween animation
-                durationMillis = 3000, // Duration of 3 seconds
-                easing = CubicBezierEasing(0.5f, 0f, 0.5f, 1f) // Use a quadratic bezier curve as easing
+                durationMillis = 7777, // Duration of 3 seconds
+                easing = CubicBezierEasing(0.15f, 0.25f, 0.55f, 1f) // Use a quadratic bezier curve as easing
             ),
             repeatMode = RepeatMode.Reverse // Reverse the animation direction when it reaches the target
         )
@@ -166,8 +175,8 @@ fun App() {
         targetValue = 1000f, // Target value of endX
         animationSpec = infiniteRepeatable( // Repeat the animation infinitely
             animation = tween( // Use a tween animation
-                durationMillis = 3000, // Duration of 3 seconds
-                easing = CubicBezierEasing(0.5f, 0f, 0.5f, 1f) // Use a quadratic bezier curve as easing
+                durationMillis = 7777, // Duration of 3 seconds
+                easing = CubicBezierEasing(0.15f, 0.25f, 0.55f, 1f) // Use a quadratic bezier curve as easing
             ),
             repeatMode = RepeatMode.Reverse // Reverse the animation direction when it reaches the target
         )
@@ -179,68 +188,68 @@ fun App() {
     val currentEndX by rememberUpdatedState(endX)
 
 
-// Animate the first color from #0F9F8E to #FFFFFF
+// Animate the first color from #0C2D48 to #F9F871
     val color1 by infiniteTransition.animateColor(
-        initialValue = Color(0xFF0F9F8E), // Initial value of color1
-        targetValue = Color(0xFFFFFFFF), // Target value of color1
-        animationSpec = infiniteRepeatable( // Repeat the animation infinitely
-            animation = tween( // Use a tween animation
-                durationMillis = 7777, // Duration of 3 seconds
-                easing = CubicBezierEasing(0.5f, 0f, 0.5f, 1f) // Use a quadratic bezier curve as easing
+        initialValue = Color(0xFF0C2D48),
+        targetValue = Color(0xFFF9F871),
+        animationSpec = infiniteRepeatable(
+            animation = tween(
+                durationMillis = 7777,
+                easing = CubicBezierEasing(0.15f, 0.25f, 0.55f, 1f)
             ),
-            repeatMode = RepeatMode.Reverse // Reverse the animation direction when it reaches the target
+            repeatMode = RepeatMode.Reverse
         )
     )
 
-// Animate the second color from #FFFFFF to #00FFA3
+// Animate the second color from #F9F871 to #FFFFFF
     val color2 by infiniteTransition.animateColor(
-        initialValue = Color(0xFFFFFFFF), // Initial value of color2
-        targetValue = Color(0xFF00FFA3), // Target value of color2
-        animationSpec = infiniteRepeatable( // Repeat the animation infinitely
-            animation = tween( // Use a tween animation
-                durationMillis = 4444, // Duration of 4 seconds
-                easing = CubicBezierEasing(0.5f, 0f, 0.5f, 1f) // Use a quadratic bezier curve as easing
+        initialValue = Color(0xFFF9F871),
+        targetValue = Color(0xFFFFFFFF),
+        animationSpec = infiniteRepeatable(
+            animation = tween(
+                durationMillis = 7777,
+                easing = CubicBezierEasing(0.15f, 0.25f, 0.55f, 1f)
             ),
-            repeatMode = RepeatMode.Reverse // Reverse the animation direction when it reaches the target
+            repeatMode = RepeatMode.Reverse
         )
     )
 
-// Animate the third color from #00FFA3 to #0C2D48
+// Animate the third color from #FFFFFF to #FF414345
     val color3 by infiniteTransition.animateColor(
-        initialValue = Color(0xFF00FFA3), // Initial value of color3
-        targetValue = Color(0xFF0C2D48), // Target value of color3
-        animationSpec = infiniteRepeatable( // Repeat the animation infinitely
-            animation = tween( // Use a tween animation
-                durationMillis = 6666, // Duration of 5 seconds
-                easing = CubicBezierEasing(0.5f, 0f, 0.5f, 1f) // Use a quadratic bezier curve as easing
+        initialValue = Color(0xFFFFFFFF),
+        targetValue = Color(0xFF414345),
+        animationSpec = infiniteRepeatable(
+            animation = tween(
+                durationMillis = 7777,
+                easing = CubicBezierEasing(0.15f, 0.25f, 0.55f, 1f)
             ),
-            repeatMode = RepeatMode.Reverse // Reverse the animation direction when it reaches the target
+            repeatMode = RepeatMode.Reverse
         )
     )
 
-// Animate the fourth color from #0C2D48 to #F9F871
+// Animate the fourth color from #FF414345 to #00FFA3
     val color4 by infiniteTransition.animateColor(
-        initialValue = Color(0xFF0C2D48), // Initial value of color4
-        targetValue = Color(0xFFF9F871), // Target value of color4
-        animationSpec = infiniteRepeatable( // Repeat the animation infinitely
-            animation = tween( // Use a tween animation
-                durationMillis = 6666, // Duration of 6 seconds
-                easing = CubicBezierEasing(0.5f, 0f, 0.5f, 1f) // Use a quadratic bezier curve as easing
+        initialValue = Color(0xFF414345),
+        targetValue = Color(0xFF00FFA3),
+        animationSpec = infiniteRepeatable(
+            animation = tween(
+                durationMillis = 7777,
+                easing = CubicBezierEasing(0.15f, 0.25f, 0.55f, 1f)
             ),
-            repeatMode = RepeatMode.Reverse // Reverse the animation direction when it reaches the target
+            repeatMode = RepeatMode.Reverse
         )
     )
 
-// Animate the fifth color from #F9F871 to #0F9F8E (back to the first color)
+// Animate the fifth color from #00FFA3 to #0C2D48
     val color5 by infiniteTransition.animateColor(
-        initialValue = Color(0xFFF9F871), // Initial value of color5
-        targetValue = Color(0xFF0F9F8E), // Target value of color5
-        animationSpec = infiniteRepeatable( // Repeat the animation infinitely
-            animation = tween( // Use a tween animation
-                durationMillis = 7777, // Duration of 7 seconds
-                easing = CubicBezierEasing(0.5f, 0f, 0.5f, 1f) // Use a quadratic bezier curve as easing
+        initialValue = Color(0xFF00FFA3),
+        targetValue = Color(0xFF0C2D48),
+        animationSpec = infiniteRepeatable(
+            animation = tween(
+                durationMillis = 7777,
+                easing = CubicBezierEasing(0.15f, 0.25f, 0.55f, 1f)
             ),
-            repeatMode = RepeatMode.Reverse // Reverse the animation direction when it reaches the target
+            repeatMode = RepeatMode.Reverse
         )
     )
 
@@ -251,16 +260,8 @@ fun App() {
     val currentColor4 by rememberUpdatedState(color4)
     val currentColor5 by rememberUpdatedState(color5)
 
-
     val largeRadialGradient = object : ShaderBrush() {
         override fun createShader(size: Size): Shader {
-            val biggerDimension = maxOf(size.height, size.width)
-//            return RadialGradientShader(
-//                colors = listOf(currentColor1, currentColor2, currentColor3, currentColor4, currentColor5),
-//                center = ,
-//                radius = biggerDimension / 2f,
-//                tileMode = TileMode.Mirror
-//            )
             return LinearGradientShader(
                 Offset(0f, 0f),
                 Offset(size.height, size.width),
@@ -279,6 +280,109 @@ fun App() {
         }
     }
 
+
+    fun onButtonClick() {
+        buttonEnable = false
+
+        FileDialog(ComposeWindow()).apply {
+            isMultipleMode = true
+            isVisible = true
+
+            if (files.isNullOrEmpty()) {
+                buttonEnable = true
+                return@apply
+            }
+
+            if (files.any { it.extension.lowercase() !in supportedFiles }) {
+                canShowAlertDialog = true
+                return@apply
+            }
+
+
+            buttonVisible = false
+
+            val resultDir = this.directory + "CompressResult_${System.currentTimeMillis()}/"
+
+            val nDir = File(resultDir)
+            if (!nDir.exists()) {
+                nDir.mkdir()
+            }
+
+            val maxConcurrent = settings.get(maxConcurrent, 5)
+            val jobs = mutableListOf<Job?>()
+
+            val doCompress = {
+                val counter = AtomicInteger(0)
+
+                files?.forEach {
+                    val job = ImageCompress.createCompressJob(
+                        scope = mScope,
+                        it.absolutePath,
+                        "$resultDir${it.name}"
+                    ) {
+                        compressProgress =
+                            counter?.getAndIncrement()?.toFloat()?.div(jobs.size.toFloat()) ?: 0f
+                    }
+
+                    jobs.add(job)
+                }
+
+                mScope?.launch {
+
+                    jobs.chunked(maxConcurrent).forEach { subTasks ->
+                        joinAll(*subTasks.filterNotNull().toTypedArray())
+                    }
+
+
+                    val result = File(resultDir)
+                    var resultSizeMB = ""
+                    if (result.isDirectory) {
+                        val totalSize = result.walk().filter { it.isFile }.sumOf { it.length() }
+                        resultSizeMB = totalSize.toMBString()
+                    }
+
+                    withContext(Dispatchers.Main) {
+                        usedCount = Tinify.compressionCount()
+                        buttonEnable = true
+                        buttonVisible = true
+
+                        compressProgress = 0f
+
+                        dialogs["压缩任务处理完成\n一共处理${files?.size}个文件\n压缩前总大小 ${
+                            files?.sumOf { it.length() }?.toMBString()
+                        }\n压缩后总大小 $resultSizeMB"] = true
+
+                        if (settings.get(openAfterFinish, true))
+                            openFolder(resultDir)
+                    }
+
+                }
+            }
+            var hintBean: HintDialogBean? = null
+
+            hintBean = HintDialogBean(
+                content = "一共${files?.size}个文件，总大小 ${
+                    files?.sumOf { it.length() }?.toMBString()
+                }\n是否开始压缩任务？",
+                action = {
+                    doCompress()
+                    // TODO 视觉化进度
+                    hintDialogs[hintBean!!] = false
+                },
+                cancelAction = {
+                    hintDialogs[hintBean!!] = false
+                    buttonEnable = true
+                    buttonVisible = true
+                }
+            )
+
+            hintDialogs[hintBean] = true
+
+        }
+    }
+
+
+
     MaterialTheme {
         // A surface container using a new brush with the animated start and end positions as background color
         Surface {
@@ -287,6 +391,9 @@ fun App() {
                     .fillMaxSize()
                     .background(largeRadialGradient)
             ) {
+
+
+//                ArtsView(artsModel)
 
                 // A column to arrange the components vertically
                 Column(
@@ -302,124 +409,42 @@ fun App() {
                     )
                     // A spacer to add some space between the title and the progress bar
                     Spacer(modifier = Modifier.height(16.dp))
-                    // A progress bar component to show the progress of file processing
-                    GradientProgressIndicator(
-                        compressProgress,
-                        gradientStart = color1,
-                        gradientEnd = color3,
-                        modifier = commonModifier,
-                        strokeWidth = trackWidth,
-                        trackColor = color4
-                    )
+
                     // A spacer to add some space between the progress bar and the button
                     Spacer(modifier = Modifier.height(16.dp))
                     // A button component to select files or folders
-                    Button(
-                        onClick = {
-                            buttonEnable = false
-
-                            FileDialog(ComposeWindow()).apply {
-                                isMultipleMode = true
-                                isVisible = true
-
-                                if (files.isNullOrEmpty()) {
-                                    buttonEnable = true
-                                    return@apply
-                                }
-
-                                if (files.any { it.extension.lowercase() !in supportedFiles }) {
-                                    canShowAlertDialog = true
-                                    return@apply
-                                }
-
-                                val resultDir = this.directory + "result/"
-
-                                val nDir = File(resultDir)
-                                if (!nDir.exists()) {
-                                    nDir.mkdir()
-                                }
-
-                                val jobs = mutableListOf<Job?>()
-
-                                val doCompress = {
-                                    val counter = AtomicInteger(0)
-
-                                    files?.forEach {
-                                        val job = ImageCompress.createCompressJob(
-                                            scope = mScope,
-                                            it.absolutePath,
-                                            "$resultDir${it.name}"
-                                        ) {
-                                            compressProgress =
-                                                counter?.getAndIncrement()?.toFloat()?.div(jobs.size.toFloat()) ?: 0f
-                                        }
-
-                                        jobs.add(job)
-                                    }
-
-                                    mScope?.launch {
-
-                                        joinAll(*jobs.filterNotNull().toTypedArray())
-
-                                        val result = File(resultDir)
-                                        var resultSizeMB = ""
-                                        if (result.isDirectory) {
-                                            val totalSize = result.walk().filter { it.isFile }.sumOf { it.length() }
-                                            resultSizeMB = totalSize.toMBString()
-                                        }
-
-                                        withContext(Dispatchers.Main) {
-                                            usedCount = Tinify.compressionCount()
-                                            buttonEnable = true
-
-                                            compressProgress = 0f
-
-                                            dialogs["压缩任务处理完成\n一共处理${files?.size}个文件\n压缩前总大小 ${
-                                                files?.sumOf { it.length() }?.toMBString()
-                                            }\n压缩后总大小 $resultSizeMB"] = true
-
-                                            if (settings.get(openAfterFinish, true))
-                                                openFolder(resultDir)
-                                        }
-
-                                    }
-                                }
-                                var hintBean: HintDialogBean? = null
-
-                                hintBean = HintDialogBean(
-                                    content = "一共${files?.size}个文件，总大小 ${
-                                        files?.sumOf { it.length() }?.toMBString()
-                                    }\n是否开始压缩任务？",
-                                    action = {
-                                        doCompress()
-                                        // TODO 视觉化进度
-                                        hintDialogs[hintBean!!] = false
-                                    },
-                                    cancelAction = {
-                                        hintDialogs[hintBean!!] = false
-                                        buttonEnable = true
-                                    }
-                                )
-
-                                hintDialogs[hintBean] = true
-
-                            }
-
-
-                        }, // Add your logic to handle button click here
-                        modifier = Modifier.size(200.dp), // Set the button size to 200 dp
-                        shape = CircleShape, // Set the button shape to circle
-                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
-                        enabled = buttonEnable
-                    ) {
-                        // A text component inside the button to show the label
-                        Text(
-                            text = "选择文件(多选）",
-                            style = MaterialTheme.typography.h6,
-                            color = Color.White,
-                            modifier = Modifier.padding(8.dp) // Add some padding around the text
+                    Box {
+                        // A progress bar component to show the progress of file processing
+                        GradientProgressIndicator(
+                            compressProgress,
+                            gradientStart = color3,
+                            gradientEnd = color2,
+                            modifier = commonModifier,
+                            strokeWidth = trackWidth,
+                            trackColor = color4
                         )
+
+                        if(buttonVisible) {
+                            Button(
+                                onClick = { onButtonClick() }, // Add your logic to handle button click here
+                                modifier = Modifier.size(indicatorSize - 2 * trackWidth)
+                                    .align(Alignment.Center), // Set the button size to 200 dp
+                                shape = CircleShape, // Set the button shape to circle
+                                colors = ButtonDefaults.buttonColors(backgroundColor = color5),
+                                enabled = buttonEnable,
+                            ) {
+                                // A text component inside the button to show the label
+                                Text(
+                                    text = "选择文件(多选）",
+                                    style = MaterialTheme.typography.subtitle2,
+                                    color = Color.White,
+                                    modifier = Modifier.padding(8.dp) // Add some padding around the text
+                                )
+                            }
+                        }
+
                     }
+
 
                     // A row to arrange the components horizontally at the top right corner of the screen
                     Row(
@@ -457,7 +482,13 @@ fun App() {
 
     if (canShowSettingDialog) {
         SettingsDialog(settings, largeRadialGradient) {
-            usedCount = Tinify.compressionCount()
+            mScope?.launch {
+                initTinyPng()
+                withContext(Dispatchers.Main) {
+                    usedCount = Tinify.compressionCount()
+                }
+            }
+
             canShowSettingDialog = false
         }
     }
@@ -466,6 +497,7 @@ fun App() {
         SupportHintAlertDialog {
             canShowAlertDialog = false
             buttonEnable = true
+            buttonVisible = true
         }
     }
 
@@ -484,5 +516,6 @@ fun App() {
             CommonHintDialog(key.content, key.action, key.cancelAction)
         }
     }
-
 }
+
+

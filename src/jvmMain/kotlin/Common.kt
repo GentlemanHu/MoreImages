@@ -1,4 +1,7 @@
 import com.russhwolf.settings.Settings
+import com.tinify.Tinify
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.awt.Desktop
 import java.io.File
 
@@ -9,7 +12,7 @@ const val progressKey = "progress"
 const val forceKey = "force"
 const val apiKeyKey = "apiKey"
 const val openAfterFinish = "openAfterFinish"
-
+const val maxConcurrent = "maxConcurrent"
 
 val settings by lazy { Settings() }
 
@@ -44,4 +47,15 @@ fun Long.toMBString(): String {
 
     // 使用 format 函数来将 mbValue 转换为保留两位小数的字符串，并返回
     return String.format("%.2f", mbValue) + "MB"
+}
+
+
+inline suspend fun initTinyPng(){
+    runCatching {
+        withContext(Dispatchers.IO) {
+            Tinify.setProxy("http://127.0.0.1:7890")
+            ImageCompress.setKey()
+            Tinify.validate()
+        }
+    }
 }

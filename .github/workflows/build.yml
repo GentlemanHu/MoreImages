@@ -100,14 +100,23 @@ jobs:
 #            ${{ steps.gradle-build.outputs.uber_jar_path }}
 #          if-no-files-found: error
 
-      - name: Uploading ${{ matrix.os }} native package
-        if: steps.gradle-build.outcome == 'success'
+#      - name: Uploading ${{ matrix.os }} native package
+#        if: steps.gradle-build.outcome == 'success'
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: ${{ steps.gradle-build.outputs.app_pkg_name }}
+#          path: |
+#            ${{ steps.gradle-build.outputs.app_pkg_path }}
+#          if-no-files-found: error
+      - name: Publish Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ steps.gradle-build.outputs.app_pkg_name }}
+          name: runner-package-${{ matrix.runtime }}
           path: |
-            ${{ steps.gradle-build.outputs.app_pkg_path }}
-          if-no-files-found: error
+            build/compose/binaries/main/*/
+            build/compose/binaries/main-release/*/
+            build/compose/jars/
+            build/compose/binaries/main/app/
 
 
   release:

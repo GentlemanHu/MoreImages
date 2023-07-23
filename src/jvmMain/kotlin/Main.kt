@@ -41,7 +41,7 @@ fun exit(app: ApplicationScope) {
 fun main() = application {
 
     ImageCompress.setKey()
-    runCatching {
+    kotlin.runCatching {
         Tinify.validate()
     }
 

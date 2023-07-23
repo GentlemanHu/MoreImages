@@ -29,6 +29,7 @@ kotlin {
                 implementation("com.sksamuel.scrimage:scrimage-webp:4.0.37")
                 implementation("com.russhwolf:multiplatform-settings-no-arg:1.0.0")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.7.2")
+                implementation("org.jetbrains.kotlin:kotlin-reflect:${extra["kotlin.version"]}")
             }
         }
         val jvmTest by getting
