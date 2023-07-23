@@ -41,7 +41,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [macos-latest, windows-latest] # , arm64, ubuntu-latest
+        os: [windows-latest] # macos-latest, , arm64, ubuntu-latest
         jdk: [ 19 ]
 
     steps:
