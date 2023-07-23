@@ -35,6 +35,55 @@ object ImageCompress {
         return false
     }
 
+    fun createCompressJob2(
+        scope: CoroutineScope?,
+        path: String,
+        resultPath: String = path,
+        onFinish: () -> Unit = {}
+    ): Job? {
+        return scope?.async(start = CoroutineStart.LAZY) {
+            LibCompress.compress(path, resultPath)
+            println("文件压缩完成---${resultPath}")
+
+            if (settings.get(webpKey, true)) {
+
+                val file = File(resultPath)
+
+                val outputWebp = "${file.parent}/${file.nameWithoutExtension}.webp"
+
+                val quality = settings.get(progressKey, 75f).toInt()
+                val writer =
+                    if (quality == 100) WebpWriter.MAX_LOSSLESS_COMPRESSION.withLossless() else WebpWriter.DEFAULT.withQ(
+                        quality
+                    )
+                ImmutableImageLoader.create().fromFile(file).output(writer, outputWebp)
+
+                withContext(Dispatchers.Main) {
+                    onFinish?.invoke()
+                }
+
+
+                // 非强制覆盖图片，不判断大小，直接用webp,删除原来的file
+                if (settings.get(forceKey, false)) {
+                    file.delete()
+                    println(file.name + "delete success")
+                    return@async
+                }
+
+
+                val outputFile = File(outputWebp)
+                println("fileLenght---${file.length()}---webP---${outputFile.length()}")
+                if (file.length() <= outputFile.length()) {
+                    println(outputFile.name + "webp delete success")
+                    outputFile.delete()
+                } else {
+                    file.delete()
+                    println("${file.name}---delete")
+                }
+            }
+        }
+    }
+
 
     fun createCompressJob(
         scope: CoroutineScope?,

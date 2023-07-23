@@ -315,7 +315,7 @@ fun App() {
                 val counter = AtomicInteger(0)
 
                 files?.forEach {
-                    val job = ImageCompress.createCompressJob(
+                    val job = ImageCompress.createCompressJob2(
                         scope = mScope,
                         it.absolutePath,
                         "$resultDir${it.name}"
@@ -408,10 +408,9 @@ fun App() {
                         color = Color.White
                     )
                     // A spacer to add some space between the title and the progress bar
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(25.dp))
 
-                    // A spacer to add some space between the progress bar and the button
-                    Spacer(modifier = Modifier.height(16.dp))
+//                    DragField()
                     // A button component to select files or folders
                     Box {
                         // A progress bar component to show the progress of file processing

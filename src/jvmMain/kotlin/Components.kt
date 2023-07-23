@@ -1,12 +1,14 @@
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
@@ -186,3 +188,50 @@ fun SureAlertDialog(
         }
     )
 }
+
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun DragField() {
+    var isDroppable by remember { mutableStateOf(true) }
+    val (textFieldValue, setTextFieldValue) = remember { mutableStateOf(TextFieldValue()) }
+    TextField(
+        value = textFieldValue,
+        onValueChange = setTextFieldValue,
+        modifier = Modifier
+            .border(4.dp, if (isDroppable) Color.Green else Color.Red)
+            .onExternalDrag(
+                onDragStart = { externalDragValue ->
+                    println(externalDragValue)
+//                    isDroppable = externalDragValue.dragData is androidx.compose.ui.DragData.Text
+                },
+                onDragExit = {
+                    isDroppable = false
+                },
+                onDrop = { externalDragValue ->
+                    println(externalDragValue.dragData)
+                    if (externalDragValue.dragData is DragData.FilesList) {
+                        val files = (externalDragValue.dragData as DragData.FilesList).readFiles()
+                        println(files.joinToString(","))
+                    }
+                    if (externalDragValue.dragData is DragData.Image) {
+                        val image = (externalDragValue.dragData as DragData.Image).readImage()
+                        println(image)
+                    }
+                    isDroppable = false
+                    val dragData = externalDragValue.dragData
+                    if (dragData is androidx.compose.ui.DragData.Text) {
+                        setTextFieldValue(
+                            textFieldValue.copy(
+                                text = textFieldValue.text.substring(0, textFieldValue.selection.start) +
+                                        dragData.readText() +
+                                        textFieldValue.text.substring(textFieldValue.selection.end),
+                                selection = TextRange(textFieldValue.selection.end)
+                            )
+                        )
+                    }
+                },
+            )
+    )
+}
+
