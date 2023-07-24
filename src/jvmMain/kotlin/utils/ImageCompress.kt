@@ -1,17 +1,27 @@
+package utils
+
+import apiKeyKey
 import com.russhwolf.settings.get
 import com.sksamuel.scrimage.nio.ImmutableImageLoader
 import com.sksamuel.scrimage.webp.WebpWriter
 import com.tinify.Tinify
+import forceKey
 import kotlinx.coroutines.*
 import org.jetbrains.skiko.MainUIDispatcher
+import progressKey
+import proxyUrlKey
+import settings
+import useProxy
+import webpKey
 import java.io.File
-import javax.imageio.ImageIO
 
 object ImageCompress {
 
 
     //"YbnH3LkGbQNsvPhfVx0Gjh9f4x3J9w5n"settings.getString(apiKeyKey,"")
     fun setKey(key: String = settings.getString(apiKeyKey, "")) {
+        if (settings.get(useProxy, false))
+            Tinify.setProxy(settings.getString(proxyUrlKey, "http://127.0.0.1:7890"))
         Tinify.setKey(key)
     }
 

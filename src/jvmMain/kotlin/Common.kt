@@ -1,9 +1,17 @@
+import androidx.compose.ui.awt.ComposeWindow
+import androidx.compose.ui.window.FrameWindowScope
 import com.russhwolf.settings.Settings
+import com.russhwolf.settings.get
 import com.tinify.Tinify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import utils.ImageCompress
 import java.awt.Desktop
+import java.awt.FileDialog
+import java.awt.Window
 import java.io.File
+import javax.swing.JFileChooser
+import javax.swing.filechooser.FileFilter
 
 
 // 定义一些键值对，用于存储和读取用户的设置
@@ -13,6 +21,9 @@ const val forceKey = "force"
 const val apiKeyKey = "apiKey"
 const val openAfterFinish = "openAfterFinish"
 const val maxConcurrent = "maxConcurrent"
+const val useInternalEngine = "useInternalEngine"
+const val useProxy = "useProxy"
+const val proxyUrlKey = "proxyUrl"
 
 val settings by lazy { Settings() }
 
@@ -50,12 +61,48 @@ fun Long.toMBString(): String {
 }
 
 
-inline suspend fun initTinyPng(){
+inline suspend fun initTinyPng() {
     runCatching {
         withContext(Dispatchers.IO) {
-            Tinify.setProxy("http://127.0.0.1:7890")
             ImageCompress.setKey()
             Tinify.validate()
         }
+    }
+}
+
+
+inline fun doIfNotUseInternal(crossinline action:()->Unit){
+    if(!settings.get(useInternalEngine,false)) {
+        action()
+    }
+}
+
+inline fun openFilePicker(crossinline onResult: (List<File>) -> Unit) {
+//    FileDialog(this.window).apply {
+//        isMultipleMode = true
+//        isVisible = true
+//
+//        onResult(this.files.toList())
+//    }
+
+    JFileChooser().apply {
+        fileSelectionMode = JFileChooser.FILES_ONLY
+        dialogTitle = "选择要压缩的图片"
+        approveButtonText = "确定"
+        isMultiSelectionEnabled = true
+        fileFilter = object : FileFilter() {
+            override fun accept(f: File?): Boolean {
+                return f?.extension in supportedFiles
+            }
+
+            override fun getDescription(): String {
+                return "Image files"
+            }
+
+        }
+
+        showOpenDialog(null)
+
+        onResult(selectedFiles.toList())
     }
 }

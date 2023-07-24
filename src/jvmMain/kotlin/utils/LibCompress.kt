@@ -1,4 +1,4 @@
-
+package utils
 import net.coobird.thumbnailator.Thumbnailator
 import net.coobird.thumbnailator.Thumbnails
 import java.awt.image.BufferedImage

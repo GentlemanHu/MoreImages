@@ -33,6 +33,8 @@ kotlin {
 //                api ("com.badlogicgames:libimagequant-java:1.0")
                 // https://mvnrepository.com/artifact/net.coobird/thumbnailator
                 implementation("net.coobird:thumbnailator:0.4.20")
+                // 不支持多选 https://github.com/Wavesonics/compose-multiplatform-file-picker
+//                implementation("com.darkrockstudios:mpfilepicker:1.2.0")
 
             }
         }

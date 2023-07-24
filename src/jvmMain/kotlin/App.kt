@@ -7,8 +7,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.*
 import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -16,18 +15,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.LinearGradientShader
 import androidx.compose.ui.graphics.Shader
 import androidx.compose.ui.graphics.ShaderBrush
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import com.russhwolf.settings.get
-import com.sumygg.anarts.arts.Arts
-import com.sumygg.anarts.ui.ArtsView
-import com.sumygg.anarts.viewmodel.ArtsModel
 import com.tinify.*
 import kotlinx.coroutines.*
+import utils.ImageCompress
 import java.awt.FileDialog
 import java.io.File
+import java.net.URI
 import java.util.concurrent.atomic.AtomicInteger
+
 
 private interface HandleError {
     fun handleAccountError()
@@ -98,7 +98,7 @@ data class HintDialogBean(
 )
 
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun App() {
     var usedCount by remember { mutableStateOf(Tinify.compressionCount()) }
@@ -114,6 +114,8 @@ fun App() {
     var canShowAlertDialog by remember { mutableStateOf(false) }
 
     var title by remember { mutableStateOf("图片压缩处理工具") }
+
+    var isDragging by remember { mutableStateOf(false) }
 
     val indicatorSize = 200.dp
     val trackWidth: Dp = (indicatorSize * .1f)
@@ -280,105 +282,111 @@ fun App() {
         }
     }
 
+    fun startCompressTask(files: List<File>) {
 
-    fun onButtonClick() {
-        buttonEnable = false
+        if (files.isEmpty()) {
+            buttonEnable = true
+            return
+        }
 
-        FileDialog(ComposeWindow()).apply {
-            isMultipleMode = true
-            isVisible = true
-
-            if (files.isNullOrEmpty()) {
-                buttonEnable = true
-                return@apply
-            }
-
-            if (files.any { it.extension.lowercase() !in supportedFiles }) {
-                canShowAlertDialog = true
-                return@apply
-            }
+        if (files.any { it.extension.lowercase() !in supportedFiles }) {
+            canShowAlertDialog = true
+            return
+        }
 
 
-            buttonVisible = false
+        buttonVisible = false
 
-            val resultDir = this.directory + "CompressResult_${System.currentTimeMillis()}/"
 
-            val nDir = File(resultDir)
-            if (!nDir.exists()) {
-                nDir.mkdir()
-            }
+        val resultDir = files.first().parent + "CompressResult_${System.currentTimeMillis()}/"
 
-            val maxConcurrent = settings.get(maxConcurrent, 5)
-            val jobs = mutableListOf<Job?>()
+        val nDir = File(resultDir)
+        if (!nDir.exists()) {
+            nDir.mkdir()
+        }
 
-            val doCompress = {
-                val counter = AtomicInteger(0)
+        val maxConcurrent = settings.get(maxConcurrent, 5)
+        val jobs = mutableListOf<Job?>()
 
-                files?.forEach {
-                    val job = ImageCompress.createCompressJob2(
-                        scope = mScope,
-                        it.absolutePath,
-                        "$resultDir${it.name}"
-                    ) {
-                        compressProgress =
-                            counter?.getAndIncrement()?.toFloat()?.div(jobs.size.toFloat()) ?: 0f
-                    }
+        val doCompress = {
+            val counter = AtomicInteger(0)
 
-                    jobs.add(job)
+            files?.forEach {
+                val job = ImageCompress.createCompressJob2(
+                    scope = mScope,
+                    it.absolutePath,
+                    "$resultDir${it.name}"
+                ) {
+                    compressProgress =
+                        counter?.getAndIncrement()?.toFloat()?.div(jobs.size.toFloat()) ?: 0f
                 }
 
-                mScope?.launch {
-
-                    jobs.chunked(maxConcurrent).forEach { subTasks ->
-                        joinAll(*subTasks.filterNotNull().toTypedArray())
-                    }
-
-
-                    val result = File(resultDir)
-                    var resultSizeMB = ""
-                    if (result.isDirectory) {
-                        val totalSize = result.walk().filter { it.isFile }.sumOf { it.length() }
-                        resultSizeMB = totalSize.toMBString()
-                    }
-
-                    withContext(Dispatchers.Main) {
-                        usedCount = Tinify.compressionCount()
-                        buttonEnable = true
-                        buttonVisible = true
-
-                        compressProgress = 0f
-
-                        dialogs["压缩任务处理完成\n一共处理${files?.size}个文件\n压缩前总大小 ${
-                            files?.sumOf { it.length() }?.toMBString()
-                        }\n压缩后总大小 $resultSizeMB"] = true
-
-                        if (settings.get(openAfterFinish, true))
-                            openFolder(resultDir)
-                    }
-
-                }
+                jobs.add(job)
             }
-            var hintBean: HintDialogBean? = null
 
-            hintBean = HintDialogBean(
-                content = "一共${files?.size}个文件，总大小 ${
-                    files?.sumOf { it.length() }?.toMBString()
-                }\n是否开始压缩任务？",
-                action = {
-                    doCompress()
-                    // TODO 视觉化进度
-                    hintDialogs[hintBean!!] = false
-                },
-                cancelAction = {
-                    hintDialogs[hintBean!!] = false
+            mScope?.launch {
+
+                jobs.chunked(maxConcurrent).forEach { subTasks ->
+                    joinAll(*subTasks.filterNotNull().toTypedArray())
+                }
+
+
+                val result = File(resultDir)
+                var resultSizeMB = ""
+                if (result.isDirectory) {
+                    val totalSize = result.walk().filter { it.isFile }.sumOf { it.length() }
+                    resultSizeMB = totalSize.toMBString()
+                }
+
+                withContext(Dispatchers.Main) {
+                    usedCount = Tinify.compressionCount()
                     buttonEnable = true
                     buttonVisible = true
+
+                    compressProgress = 0f
+
+                    dialogs["压缩任务处理完成\n一共处理${files?.size}个文件\n压缩前总大小 ${
+                        files?.sumOf { it.length() }?.toMBString()
+                    }\n压缩后总大小 $resultSizeMB"] = true
+
+                    if (settings.get(openAfterFinish, true))
+                        openFolder(resultDir)
                 }
-            )
 
-            hintDialogs[hintBean] = true
-
+            }
         }
+        var hintBean: HintDialogBean? = null
+
+        hintBean = HintDialogBean(
+            content = "一共${files?.size}个文件，总大小 ${
+                files?.sumOf { it.length() }?.toMBString()
+            }\n是否开始压缩任务？",
+            action = {
+                doCompress()
+                // TODO 视觉化进度
+                hintDialogs[hintBean!!] = false
+            },
+            cancelAction = {
+                hintDialogs[hintBean!!] = false
+                buttonEnable = true
+                buttonVisible = true
+            }
+        )
+
+        hintDialogs[hintBean] = true
+
+    }
+
+
+    fun onButtonClick() {
+        if (isDragging) return
+
+        buttonEnable = false
+
+        openFilePicker {
+            startCompressTask(it)
+        }
+
     }
 
 
@@ -390,6 +398,31 @@ fun App() {
                 modifier = Modifier
                     .fillMaxSize()
                     .background(largeRadialGradient)
+                    .onExternalDrag(
+                        enabled = buttonEnable,
+                        onDragStart = { data ->
+                            isDragging = true
+                            println("${data.dragData}----dragStart")
+                        },
+                        onDrag = { drag ->
+                            isDragging = true
+//                            println("${drag.dragData}----onDrag")
+                        },
+                        onDrop = { externalDragValue ->
+                            println(externalDragValue.dragData)
+                            if (externalDragValue.dragData is DragData.FilesList) {
+                                val files = (externalDragValue.dragData as DragData.FilesList).readFiles()
+                                println(files.joinToString(","))
+                                val realFiles = files.map { File(URI.create(it)) }
+
+                                isDragging = false
+                                startCompressTask(realFiles)
+                            }
+                        },
+                        onDragExit = {
+                            isDragging = false
+                        }
+                    )
             ) {
 
 
@@ -423,7 +456,7 @@ fun App() {
                             trackColor = color4
                         )
 
-                        if(buttonVisible) {
+                        if (buttonVisible) {
                             Button(
                                 onClick = { onButtonClick() }, // Add your logic to handle button click here
                                 modifier = Modifier.size(indicatorSize - 2 * trackWidth)
@@ -434,8 +467,9 @@ fun App() {
                             ) {
                                 // A text component inside the button to show the label
                                 Text(
-                                    text = "选择文件(多选）",
+                                    text = if (isDragging) "松手释放" else "点击选择文件或者拖拽文件 (多选）",
                                     style = MaterialTheme.typography.subtitle2,
+                                    textAlign = TextAlign.Center,
                                     color = Color.White,
                                     modifier = Modifier.padding(8.dp) // Add some padding around the text
                                 )
@@ -481,10 +515,12 @@ fun App() {
 
     if (canShowSettingDialog) {
         SettingsDialog(settings, largeRadialGradient) {
-            mScope?.launch {
-                initTinyPng()
-                withContext(Dispatchers.Main) {
-                    usedCount = Tinify.compressionCount()
+            doIfNotUseInternal {
+                mScope?.launch {
+                    initTinyPng()
+                    withContext(Dispatchers.Main) {
+                        usedCount = Tinify.compressionCount()
+                    }
                 }
             }
 
@@ -516,5 +552,6 @@ fun App() {
         }
     }
 }
+
 
 

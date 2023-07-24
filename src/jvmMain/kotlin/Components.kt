@@ -1,5 +1,4 @@
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -17,6 +16,7 @@ import androidx.compose.ui.window.Popup
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 import com.russhwolf.settings.set
+import java.net.URI
 
 @Composable
 // 封装的设置弹窗函数，接收一个Settings对象，一个Brush对象和一个回调函数作为参数，用来处理弹窗关闭的逻辑
@@ -27,6 +27,10 @@ fun SettingsDialog(settings: Settings, brush: Brush, onDismiss: () -> Unit) {
     var forceSwitch by remember { mutableStateOf(settings.get(forceKey, false)) }
     var apiKey by remember { mutableStateOf(settings.get(apiKeyKey, "")) }
     var openAfterFinishSwitch by remember { mutableStateOf(settings.get(openAfterFinish, true)) }
+    var useInternalSwitch by remember { mutableStateOf(settings.get(useInternalEngine, false)) }
+
+    var useProxySwitch by remember { mutableStateOf(settings.get(useProxy, false)) }
+    var proxyUrl by remember { mutableStateOf(settings.get(proxyUrlKey, "http://127.0.0.1:7890")) }
 
     // 使用Dialog或者Popup来显示一个Box，代替AlertDialog
     Popup(alignment = Alignment.Center, focusable = true) {
@@ -37,6 +41,7 @@ fun SettingsDialog(settings: Settings, brush: Brush, onDismiss: () -> Unit) {
                 .padding(16.dp)
         ) {
             Column(
+                modifier = Modifier.verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.Center, // Center the column content vertically
                 horizontalAlignment = Alignment.Start // Center the column content horizontally)
             ) {
@@ -116,10 +121,51 @@ fun SettingsDialog(settings: Settings, brush: Brush, onDismiss: () -> Unit) {
                         readOnly = false,
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-//                    Button(onClick = { /* 保存API key的逻辑 */ }) {
-//                        Text(text = "保存API", color = Color.White)
-//                    }
                 }
+
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(text = "使用代理", color = Color.White)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Switch(
+                        checked = useProxySwitch,
+                        onCheckedChange = {
+                            useProxySwitch = it
+                            settings.set(useProxy, it)
+                        }
+                    ) // 当用户切换开关时，把新的值存入Settings对象中
+                }
+
+                if (useProxySwitch) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        OutlinedTextField(
+                            value = proxyUrl,
+                            onValueChange = {
+                                println("value----$it")
+                                proxyUrl = it
+                                settings.set(proxyUrlKey, it)
+                            }, // 当用户输入API key时，把新的值存入Settings对象中
+                            label = { Text(text = "代理连接(比如，http://localhost:1111)", color = Color.White) },
+                            textStyle = TextStyle(color = Color.White, fontSize = 16.sp),
+                            readOnly = false,
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                    }
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(text = "[试验性]使用内置压缩引擎（非TinyPNG，压缩质量未知）", color = Color.Red)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Switch(
+                        checked = useInternalSwitch,
+                        onCheckedChange = {
+                            useInternalSwitch = it
+                            settings.set(useInternalEngine, it)
+                        }
+                    ) // 当用户切换开关时，把新的值存入Settings对象中
+                }
+
                 Spacer(modifier = Modifier.height(30.dp))
                 Button(onClick = onDismiss) {
                     Text(text = "关闭设置", color = Color.White)
@@ -213,6 +259,9 @@ fun DragField() {
                     if (externalDragValue.dragData is DragData.FilesList) {
                         val files = (externalDragValue.dragData as DragData.FilesList).readFiles()
                         println(files.joinToString(","))
+                        val uris = files.map { URI.create(it) }
+
+                        uris.forEach { println(it.rawPath) }
                     }
                     if (externalDragValue.dragData is DragData.Image) {
                         val image = (externalDragValue.dragData as DragData.Image).readImage()
