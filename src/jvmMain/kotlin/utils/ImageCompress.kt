@@ -134,6 +134,9 @@ object ImageCompress {
                 val outputFile = File(outputWebp)
                 if (file.length() <= outputFile.length()) {
                     outputFile.delete()
+                }else {
+                    file.delete()
+                    println("${file.name}---delete")
                 }
             }
         }
