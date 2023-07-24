@@ -312,7 +312,7 @@ fun App() {
             val counter = AtomicInteger(0)
 
             files?.forEach {
-                val job = ImageCompress.createCompressJob2(
+                val job = ImageCompress.compressVersionWrapper(
                     scope = mScope,
                     it.absolutePath,
                     "$resultDir${it.name}"
@@ -486,13 +486,27 @@ fun App() {
                         horizontalArrangement = Arrangement.End, // Align the row content to the end (right)
                         verticalAlignment = Alignment.Top, // Align the row content to the top
                     ) {
-                        // A text component to show some information
-                        Text(
-                            text = "接口用量：$usedCount",
-                            style = MaterialTheme.typography.body1,
-                            color = Color.White,
-                            modifier = Modifier.padding(end = 8.dp) // Add some padding to the right of the text
-                        )
+
+                        Column {
+                            // A text component to show some information
+                            val isInternal = settings.get(useInternalEngine, false)
+                            if (!isInternal)
+                                Text(
+                                    text = "接口用量：$usedCount",
+                                    style = MaterialTheme.typography.body1,
+                                    color = Color.White,
+                                    modifier = Modifier.padding(end = 8.dp) // Add some padding to the right of the text
+                                )
+
+                            val engineText = if (isInternal) "内置引擎" else "TinyPNG"
+                            Text(
+                                text = "当前压缩引擎：$engineText",
+                                style = MaterialTheme.typography.body1,
+                                color = Color.White,
+                                modifier = Modifier.padding(end = 8.dp) // Add some padding to the right of the text
+                            )
+                        }
+
                         // An icon button component to show a settings icon and handle click events
                         IconButton(
                             onClick = {

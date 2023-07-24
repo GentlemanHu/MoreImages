@@ -12,6 +12,7 @@ import org.jetbrains.skiko.MainUIDispatcher
 import progressKey
 import proxyUrlKey
 import settings
+import useInternalEngine
 import useProxy
 import webpKey
 import java.io.File
@@ -136,6 +137,21 @@ object ImageCompress {
                 }
             }
         }
+    }
+
+
+    fun compressVersionWrapper(
+        scope: CoroutineScope?,
+        path: String,
+        resultPath: String = path,
+        onFinish: () -> Unit = {}
+    ): Job? {
+        return if (settings.get(useInternalEngine, false)) createCompressJob2(
+            scope,
+            path,
+            resultPath,
+            onFinish
+        ) else createCompressJob(scope, path, resultPath, onFinish)
     }
 
 }
