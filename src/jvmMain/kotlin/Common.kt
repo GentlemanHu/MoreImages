@@ -25,7 +25,7 @@ const val useInternalEngine = "useInternalEngine"
 const val useProxy = "useProxy"
 const val proxyUrlKey = "proxyUrl"
 
-
+// a@ 默认api
 const val defaultApi = "JB9dsXdmNNkwPbSVTqDrrGxmZ22h1z2v"
 
 val settings by lazy { Settings() }
