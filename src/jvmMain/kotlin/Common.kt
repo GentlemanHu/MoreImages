@@ -25,6 +25,9 @@ const val useInternalEngine = "useInternalEngine"
 const val useProxy = "useProxy"
 const val proxyUrlKey = "proxyUrl"
 
+
+const val defaultApi = "JB9dsXdmNNkwPbSVTqDrrGxmZ22h1z2v"
+
 val settings by lazy { Settings() }
 
 val supportedFiles by lazy { listOf("png", "jpg", "jpeg") }
@@ -62,17 +65,18 @@ fun Long.toMBString(): String {
 
 
 inline suspend fun initTinyPng() {
-    runCatching {
-        withContext(Dispatchers.IO) {
+    withContext(Dispatchers.IO) {
+        runCatching {
             ImageCompress.setKey()
             Tinify.validate()
         }
     }
+
 }
 
 
-inline fun doIfNotUseInternal(crossinline action:()->Unit){
-    if(!settings.get(useInternalEngine,false)) {
+inline fun doIfNotUseInternal(crossinline action: () -> Unit) {
+    if (!settings.get(useInternalEngine, false)) {
         action()
     }
 }

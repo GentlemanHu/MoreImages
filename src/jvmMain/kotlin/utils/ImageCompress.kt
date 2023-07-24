@@ -5,6 +5,7 @@ import com.russhwolf.settings.get
 import com.sksamuel.scrimage.nio.ImmutableImageLoader
 import com.sksamuel.scrimage.webp.WebpWriter
 import com.tinify.Tinify
+import defaultApi
 import forceKey
 import kotlinx.coroutines.*
 import org.jetbrains.skiko.MainUIDispatcher
@@ -18,8 +19,7 @@ import java.io.File
 object ImageCompress {
 
 
-    //"YbnH3LkGbQNsvPhfVx0Gjh9f4x3J9w5n"settings.getString(apiKeyKey,"")
-    fun setKey(key: String = settings.getString(apiKeyKey, "")) {
+    fun setKey(key: String = settings.getString(apiKeyKey, defaultApi)) {
         if (settings.get(useProxy, false))
             Tinify.setProxy(settings.getString(proxyUrlKey, "http://127.0.0.1:7890"))
         Tinify.setKey(key)

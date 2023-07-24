@@ -25,7 +25,7 @@ fun SettingsDialog(settings: Settings, brush: Brush, onDismiss: () -> Unit) {
     var webpSwitch by remember { mutableStateOf(settings.get(webpKey, true)) }
     var progress by remember { mutableStateOf(settings.get(progressKey, 75f)) }
     var forceSwitch by remember { mutableStateOf(settings.get(forceKey, false)) }
-    var apiKey by remember { mutableStateOf(settings.get(apiKeyKey, "")) }
+    var apiKey by remember { mutableStateOf(settings.get(apiKeyKey, defaultApi)) }
     var openAfterFinishSwitch by remember { mutableStateOf(settings.get(openAfterFinish, true)) }
     var useInternalSwitch by remember { mutableStateOf(settings.get(useInternalEngine, false)) }
 
