@@ -57,7 +57,7 @@ compose.desktop {
                 iconFile.set(project.file("src/jvmMain/resources/assets/image_trans_logo.ico"))
             }
             packageName = "MoreImages"
-            packageVersion = "1.0.0"
+            packageVersion = "1.0.1"
         }
     }
 }
