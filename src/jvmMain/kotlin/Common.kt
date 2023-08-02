@@ -25,6 +25,9 @@ const val useInternalEngine = "useInternalEngine"
 const val useProxy = "useProxy"
 const val proxyUrlKey = "proxyUrl"
 
+// 覆盖原文件
+const val saveOnOriginalFile = "saveOnOriginalFile"
+
 // a@ 默认api
 const val defaultApi = "JB9dsXdmNNkwPbSVTqDrrGxmZ22h1z2v"
 

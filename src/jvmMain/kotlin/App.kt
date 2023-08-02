@@ -399,7 +399,7 @@ fun App() {
                     .fillMaxSize()
                     .background(largeRadialGradient)
                     .onExternalDrag(
-                        enabled = buttonEnable,
+                        enabled = buttonEnable && buttonVisible,
                         onDragStart = { data ->
                             isDragging = true
                             println("${data.dragData}----dragStart")
@@ -467,7 +467,7 @@ fun App() {
                             ) {
                                 // A text component inside the button to show the label
                                 Text(
-                                    text = if (isDragging) "松手释放" else "点击选择文件或者拖拽文件 (多选）",
+                                    text = if (isDragging) "松手释放" else "点击选择文件或者拖拽文件(多选)",
                                     style = MaterialTheme.typography.subtitle2,
                                     textAlign = TextAlign.Center,
                                     color = Color.White,
@@ -512,7 +512,7 @@ fun App() {
                             onClick = {
                                 canShowSettingDialog = true
                             },
-                            enabled = buttonEnable
+                            enabled = buttonEnable && buttonVisible
                         ) { // Add your logic to handle button click here
                             Icon(
                                 imageVector = Icons.Default.Settings, // Use a predefined settings icon from material icons
