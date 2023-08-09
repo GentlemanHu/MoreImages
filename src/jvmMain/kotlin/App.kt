@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import com.russhwolf.settings.get
+import com.russhwolf.settings.set
 import com.tinify.*
 import kotlinx.coroutines.*
 import utils.ImageCompress
@@ -122,6 +123,8 @@ fun App() {
     val commonModifier = Modifier.size(indicatorSize)
 
     var compressProgress by remember { mutableStateOf(0f) }
+
+    var checkedState by remember { mutableStateOf(settings.get(onlyConvertToWebP, false)) }
 
 //    val artsModel by remember { mutableStateOf(ArtsModel(Arts.MAZE)) }
 //
@@ -363,7 +366,6 @@ fun App() {
             }\n是否开始压缩任务？",
             action = {
                 doCompress()
-                // TODO 视觉化进度
                 hintDialogs[hintBean!!] = false
             },
             cancelAction = {
@@ -424,7 +426,6 @@ fun App() {
                         }
                     )
             ) {
-
 
 //                ArtsView(artsModel)
 
@@ -520,6 +521,23 @@ fun App() {
                                 tint = Color.White // Set the icon tint color to white
                             )
                         }
+                    }
+                }
+                Column(
+                    modifier = Modifier.padding(16.dp).align(Alignment.TopEnd),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.End
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(color = Color.White,text = "不压缩，只转换为webp")
+                        Checkbox(
+                            checked = checkedState,
+                            onCheckedChange = {
+                                checkedState = it
+                                settings.set(onlyConvertToWebP, checkedState)
+                            },
+                            enabled = buttonEnable
+                        )
                     }
                 }
             }

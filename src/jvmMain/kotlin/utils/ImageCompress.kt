@@ -8,6 +8,7 @@ import com.tinify.Tinify
 import defaultApi
 import forceKey
 import kotlinx.coroutines.*
+import onlyConvertToWebP
 import org.jetbrains.skiko.MainUIDispatcher
 import progressKey
 import proxyUrlKey
@@ -103,9 +104,13 @@ object ImageCompress {
         onFinish: () -> Unit = {}
     ): Job? {
         return scope?.async(start = CoroutineStart.LAZY) {
-            val result = Tinify.fromFile(path)
-            result.toFile(resultPath)
-            println("文件压缩完成---${resultPath}")
+            if(!settings.get(onlyConvertToWebP,false)) {
+                val result = Tinify.fromFile(path)
+                result.toFile(resultPath)
+                println("文件压缩完成---${resultPath}")
+            }else{
+                File(path).copyTo(File(resultPath),true)
+            }
 
             if (settings.get(webpKey, true)) {
 

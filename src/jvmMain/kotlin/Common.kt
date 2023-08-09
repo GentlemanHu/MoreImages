@@ -28,6 +28,8 @@ const val proxyUrlKey = "proxyUrl"
 // 覆盖原文件
 const val saveOnOriginalFile = "saveOnOriginalFile"
 
+const val onlyConvertToWebP = "onlyConvertToWebP"
+
 // a@ 默认api
 const val defaultApi = "JB9dsXdmNNkwPbSVTqDrrGxmZ22h1z2v"
 
