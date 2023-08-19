@@ -7,6 +7,7 @@ import com.russhwolf.settings.get
 import com.tinify.Tinify
 import kotlinx.coroutines.*
 import utils.ImageCompress
+import utils.LibCompress
 import javax.swing.UIManager
 
 fun exit(app: ApplicationScope) {
@@ -14,7 +15,7 @@ fun exit(app: ApplicationScope) {
 }
 
 fun main() = application {
-
+    LibCompress
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
     doIfNotUseInternal {

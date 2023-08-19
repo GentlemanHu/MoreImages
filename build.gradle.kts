@@ -12,6 +12,7 @@ repositories {
     google()
     mavenCentral()
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+    maven("https://oss.sonatype.org/content/repositories/snapshots")
 }
 
 kotlin {
@@ -30,9 +31,9 @@ kotlin {
                 implementation("com.russhwolf:multiplatform-settings-no-arg:1.0.0")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.7.2")
                 implementation("org.jetbrains.kotlin:kotlin-reflect:${extra["kotlin.version"]}")
-//                api ("com.badlogicgames:libimagequant-java:1.0")
+                api ("com.badlogicgames:libimagequant-java:1.2-SNAPSHOT")
                 // https://mvnrepository.com/artifact/net.coobird/thumbnailator
-                implementation("net.coobird:thumbnailator:0.4.20")
+//                implementation("net.coobird:thumbnailator:0.4.20")
                 // 不支持多选 https://github.com/Wavesonics/compose-multiplatform-file-picker
 //                implementation("com.darkrockstudios:mpfilepicker:1.2.0")
 

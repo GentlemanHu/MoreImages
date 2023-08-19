@@ -54,7 +54,11 @@ object ImageCompress {
         onFinish: () -> Unit = {}
     ): Job? {
         return scope?.async(start = CoroutineStart.LAZY) {
-            LibCompress.compress(path, resultPath)
+            if(!settings.get(onlyConvertToWebP,false)) {
+                LibCompress.compress(path, resultPath)
+            }else{
+                File(path).copyTo(File(resultPath),true)
+            }
             println("文件压缩完成---${resultPath}")
 
             if (settings.get(webpKey, true)) {
