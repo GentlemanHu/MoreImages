@@ -46,7 +46,7 @@ jobs:
 
     steps:
       - name: Check out the source code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: 'Set up latest JDK N from jdk.java.net'
         uses: oracle-actions/setup-java@v1
@@ -127,7 +127,7 @@ jobs:
 
     steps:
       - name: Check out the source code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
