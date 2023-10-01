@@ -26,7 +26,7 @@ kotlin {
             dependencies {
                 implementation(compose.desktop.currentOs)
                 api("com.tinify:tinify:latest.release")
-                implementation("com.sksamuel.scrimage:scrimage-core:4.0.37")
+                implementation("com.sksamuel.scrimage:scrimage-core:4.1.0")
                 implementation("com.sksamuel.scrimage:scrimage-webp:4.0.37")
                 implementation("com.russhwolf:multiplatform-settings-no-arg:1.0.0")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.7.2")
