@@ -51,8 +51,8 @@ jobs:
       - name: 'Set up latest JDK N from jdk.java.net'
         uses: oracle-actions/setup-java@v1.3.2
         with:
-          website: jdk.java.net
-          release: 19 # Replace N with GA, EA, 17, 18, 19, ...
+          website: oracle.com
+          release: 21 # Replace N with GA, EA, 17, 18, 19, ...
 #      - name: Download ${{ matrix.os }} OpenJDK ${{ matrix.jdk }}
 #        id: download-jdk
 #        uses: sormuras/download-jdk@v1
