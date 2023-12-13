@@ -41,7 +41,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [windows-latest] # macos-latest, , arm64, ubuntu-latest
+        os: [windows-latest, macos-latest, ubuntu-latest] # macos-latest, , arm64, ubuntu-latest
         jdk: [ 19 ]
 
     steps:
@@ -111,7 +111,7 @@ jobs:
       - name: Publish Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: runner-package-${{ matrix.runtime }}
+          name: MoreImages-${{ matrix.os }}.zip
           path: |
             build/compose/binaries/main/*/
             build/compose/binaries/main-release/*/
