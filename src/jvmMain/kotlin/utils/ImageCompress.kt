@@ -15,6 +15,7 @@ import org.jetbrains.skiko.MainUIDispatcher
 import progressKey
 import proxyUrlKey
 import settings
+import toMBString
 import useInternalEngine
 import useProxy
 import webpKey
@@ -92,15 +93,15 @@ object ImageCompress {
     ): Job? {
         return scope?.async(start = CoroutineStart.LAZY) {
             if (!settings.get(onlyConvertToWebP, false)) {
-                println("压缩第 1 轮")
                 var result = Tinify.fromFile(path)
-                repeat(settings.get(compressCount, 5) - 1) {
-                    println("压缩第 ${it + 2} 轮")
+                println("压缩第 1 轮 fileSize --- ${result.toBuffer().size.toLong().toMBString()}")
+                repeat(settings.get(compressCount, 1) - 1) {
                     result = Tinify.fromBuffer(result.toBuffer())
+                    println("压缩第 ${it + 2} 轮 fileSize --- ${result.toBuffer().size.toLong().toMBString()}")
                 }
 
                 result.toFile(resultPath)
-                println("文件压缩完成---${resultPath}")
+                println("文件压缩完成---${resultPath} -- fileSize -- ${result.toBuffer().size.toLong().toMBString()}")
             } else {
                 File(path).copyTo(File(resultPath), true)
             }

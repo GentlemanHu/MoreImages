@@ -1,5 +1,6 @@
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -7,6 +8,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
@@ -28,6 +30,8 @@ fun SettingsDialog(settings: Settings, brush: Brush, onDismiss: () -> Unit) {
     var apiKey by remember { mutableStateOf(settings.get(apiKeyKey, defaultApi)) }
     var openAfterFinishSwitch by remember { mutableStateOf(settings.get(openAfterFinish, true)) }
     var useInternalSwitch by remember { mutableStateOf(settings.get(useInternalEngine, false)) }
+
+    var mCompressCount = mutableStateOf(settings.get(compressCount, 1))
 
     var useProxySwitch by remember { mutableStateOf(settings.get(useProxy, false)) }
     var proxyUrl by remember { mutableStateOf(settings.get(proxyUrlKey, "http://127.0.0.1:7890")) }
@@ -169,6 +173,32 @@ fun SettingsDialog(settings: Settings, brush: Brush, onDismiss: () -> Unit) {
                 Spacer(modifier = Modifier.height(30.dp))
                 Button(onClick = onDismiss) {
                     Text(text = "关闭设置", color = Color.White)
+                }
+            }
+
+            if (!useInternalSwitch) {
+                Column(
+                    modifier = Modifier.padding(16.dp).align(Alignment.TopEnd),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.End
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            color = Color.White,
+                            text = "TinyPNG 循环压缩次数:",
+                            style = TextStyle(color = Color.White, fontSize = 20.sp)
+                        )
+                        Box(modifier = Modifier.minimumInteractiveComponentSize()) {
+                            NumberPicker(
+                                state = mCompressCount,
+                                range = 1..5,
+                                modifier = Modifier.align(Alignment.Center),
+                                textStyle = TextStyle(color = Color.White, fontSize = 25.sp)
+                            ) { value ->
+                                settings.set(compressCount, value)
+                            }
+                        }
+                    }
                 }
             }
         }
