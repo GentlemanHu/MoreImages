@@ -27,7 +27,7 @@ fun main() = application {
 
     Window(
         onCloseRequest = { exit(this) },
-        icon = BitmapPainter(useResource("assets/image_trans_logo.jpg", ::loadImageBitmap)),
+        icon = BitmapPainter(useResource("assets/image_trans_logo.png", ::loadImageBitmap)),
         resizable = false,
         title = "MoreImages"
     ) {
