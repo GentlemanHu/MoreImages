@@ -24,6 +24,8 @@ const val maxConcurrent = "maxConcurrent"
 const val useInternalEngine = "useInternalEngine"
 const val useProxy = "useProxy"
 const val proxyUrlKey = "proxyUrl"
+//  png压缩次数
+const val compressCount = "compressCount"
 
 // 覆盖原文件
 const val saveOnOriginalFile = "saveOnOriginalFile"

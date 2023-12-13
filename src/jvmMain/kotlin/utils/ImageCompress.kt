@@ -4,7 +4,9 @@ import apiKeyKey
 import com.russhwolf.settings.get
 import com.sksamuel.scrimage.nio.ImmutableImageLoader
 import com.sksamuel.scrimage.webp.WebpWriter
+import com.tinify.Options
 import com.tinify.Tinify
+import compressCount
 import defaultApi
 import forceKey
 import kotlinx.coroutines.*
@@ -28,25 +30,6 @@ object ImageCompress {
     }
 
 
-    inline suspend fun compressImage(
-        path: String,
-        resultPath: String = path,
-        crossinline onResultAction: () -> Unit = {}
-    ): Boolean {
-        runCatching {
-            val result = Tinify.fromFile(path)
-            result.toFile(resultPath)
-
-            withContext(MainUIDispatcher) {
-                onResultAction()
-            }
-            return true
-        }.onFailure {
-
-        }
-        return false
-    }
-
     fun createCompressJob2(
         scope: CoroutineScope?,
         path: String,
@@ -54,10 +37,10 @@ object ImageCompress {
         onFinish: () -> Unit = {}
     ): Job? {
         return scope?.async(start = CoroutineStart.LAZY) {
-            if(!settings.get(onlyConvertToWebP,false)) {
+            if (!settings.get(onlyConvertToWebP, false)) {
                 LibCompress.compress(path, resultPath)
-            }else{
-                File(path).copyTo(File(resultPath),true)
+            } else {
+                File(path).copyTo(File(resultPath), true)
             }
             println("文件压缩完成---${resultPath}")
 
@@ -108,12 +91,18 @@ object ImageCompress {
         onFinish: () -> Unit = {}
     ): Job? {
         return scope?.async(start = CoroutineStart.LAZY) {
-            if(!settings.get(onlyConvertToWebP,false)) {
-                val result = Tinify.fromFile(path)
+            if (!settings.get(onlyConvertToWebP, false)) {
+                println("压缩第 1 轮")
+                var result = Tinify.fromFile(path)
+                repeat(settings.get(compressCount, 5) - 1) {
+                    println("压缩第 ${it + 2} 轮")
+                    result = Tinify.fromBuffer(result.toBuffer())
+                }
+
                 result.toFile(resultPath)
                 println("文件压缩完成---${resultPath}")
-            }else{
-                File(path).copyTo(File(resultPath),true)
+            } else {
+                File(path).copyTo(File(resultPath), true)
             }
 
             if (settings.get(webpKey, true)) {

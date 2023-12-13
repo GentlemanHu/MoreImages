@@ -50,12 +50,15 @@ compose.desktop {
         mainClass = "MainKt"
         nativeDistributions {
             includeAllModules = true
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi)
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             macOS {
                 iconFile.set(project.file("src/jvmMain/resources/assets/image_trans_logo.icns"))
             }
             windows {
                 iconFile.set(project.file("src/jvmMain/resources/assets/image_trans_logo.ico"))
+            }
+            linux {
+                iconFile.set(project.file("src/jvmMain/resources/assets/image_trans_logo.png"))
             }
             packageName = "MoreImages"
             packageVersion = "1.0.1"
