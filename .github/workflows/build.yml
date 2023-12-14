@@ -118,10 +118,6 @@ jobs:
             build/compose/jars/
             build/compose/binaries/main/app/
             
-      - name: Set matrix.os output
-        id: set_matrix_os
-        run: echo "::set-output name=matrix_os::${{ matrix.os }}"
-
 
   release:
     name: Release new version.
@@ -160,7 +156,7 @@ jobs:
           body: ${{ steps.github_release.outputs.changelog }}
           prerelease: ${{ contains(github.event.inputs.version, '-rc') || contains(github.event.inputs.version, '-b') || contains(github.event.inputs.version, '-a') }}
           files: |
-            ${{ github.workspace }}/release-artifacts/MoreImages-${{ needs.build.outputs.matrix_os }}.zip
+            ${{ github.workspace }}/release-artifacts/MoreImages-*.zip
           fail_on_unmatched_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
