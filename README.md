@@ -1,6 +1,7 @@
 ## MoreImages
 
 跨平台图片压缩工具，同时支持本地压缩引擎和TinyPNG API，支持智能转换webp格式。
+支持Win；Mac，Linux三端
 
 
 ### 主界面
