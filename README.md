@@ -1,8 +1,10 @@
 ## MoreImages
 
 跨平台图片压缩工具，同时支持本地压缩引擎和TinyPNG API，支持智能转换webp格式。
+
 支持Win；Mac，Linux三端
 
+![mac](https://github.com/GentlemanHu/MoreImages/actions/workflows/build.yml/badge.svg)
 
 ### 主界面
 ![img.png](arts/img.png)
